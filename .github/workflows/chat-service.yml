@@ -10,8 +10,8 @@ on:
 jobs:
   build-and-deploy:
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      DOCKER_USERNAME: ${{ secrets.alexandr1906 }}
+      DOCKER_PASSWORD: ${{ secrets.dckr_pat_CnTJm3iKGgvn7hov13KqShTtYqc }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository chat service
