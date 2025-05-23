@@ -1,4 +1,4 @@
-# CupidMeet
+# Cupidonchik
 
 ## Документация API
 
