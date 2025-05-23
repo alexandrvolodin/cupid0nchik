@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  database:
+    container_name: pg-database
+    image: postgres:16.2
+    restart: always # Гарантирует перезапуск БД, если она остановится
+    environment:
+      POSTGRES_USER: myuser       # <-- Установил конкретного пользователя
+      POSTGRES_PASSWORD: mypassword # <-- Установил конкретный пароль
+      POSTGRES_DB: cupid-meet     # Имя базы данных, которую будет использовать ваше приложение
+    ports:
+      - "5433:5432" # Маппинг порта 5433 хоста на порт 5432 внутри контейнера БД
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Обеспечивает персистентное хранение данных БД
+    healthcheck: # Проверка работоспособности БД, чтобы chat-service мог ее дождаться
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s # Проверять каждые 5 секунд
+      timeout: 5s # Таймаут на каждую проверку 5 секунд
+      retries: 5 # 5 попыток перед объявлением контейнера нездоровым
+      start_period: 10s # Дать БД 10 секунд на первичный запуск перед началом проверок
+
+  chat-service:
+    # Контекст сборки - текущая директория, так как docker-compose.yml и Dockerfile в одной папке
+    build:
+      context: . # <-- Изменено на '.'
+      dockerfile: Dockerfile
+    container_name: chat-service-app # Удобное имя для контейнера вашего приложения
+    restart: on-failure # Перезапускать приложение, если оно завершилось с ошибкой
+    ports:
+      - "8060:8060" # Маппинг порта 8060 хоста на порт 8060 контейнера приложения
+    environment:
+      # Переменные окружения для подключения вашего Spring Boot приложения к БД
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/cupid-meet # 'database' - это имя сервиса БД в Docker Compose
+      SPRING_DATASOURCE_USERNAME: myuser # Должен совпадать с POSTGRES_USER в сервисе database
+      SPRING_DATASOURCE_PASSWORD: mypassword # Должен совпадать с POSTGRES_PASSWORD в сервисе database
+      SERVER_SERVLET_CONTEXT_PATH: /api/chat-service # Путь контекста вашего приложения
+      SERVER_PORT: 8060 # Порт, на котором слушает ваше приложение внутри контейнера
+    depends_on:
+      database:
+        condition: service_healthy # Приложение запустится только после того, как БД будет готова и "здорова"
+
+volumes:
+  pgdata: # Объявляем именованный том, используемый сервисом database

@@ -1,0 +1,27 @@
+###
+
+# curl -X POST
+#  http://localhost:8060/api/chat-service/v1/chats
+#  -H 'Content-Type: application/json'
+#  -H 'Authorization: Bearer ВАШ_ACCESS_TOKEN_ИЗ_ШАГА_1'
+#  -d '{
+#        "participants": [
+#          "UUID_ПОЛЬЗОВАТЕЛЯ_1",
+#          "UUID_ПОЛЬЗОВАТЕЛЯ_2"
+#        ],
+#        "chatType": "PRIVATE"
+#      }'
+POST http://localhost:8060/api/chat-service/v1/chats
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJYcm9vUUxIWE9iSmJhcnVCd3Y4cnRkOEx1bUJJMlBkZURNWlZmZk9JOEtNIn0.eyJleHAiOjE3NDc5OTg2MDMsImlhdCI6MTc0Nzk5ODMwMywianRpIjoiYzYyYjU3ZTYtZDNlZC00Yjg5LTk0ZTYtZjc3Mjc5ZDI0ZTE5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9jdXBpZC1tZWV0LWRldiIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJhYWZmMjNjZC1hMmYyLTQyMzktYjI4NS05MGE4YWEyNTYzYWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjdXBpZC1tZWV0LWRldiIsInNlc3Npb25fc3RhdGUiOiI0YzIwNmJmMC1jNzZiLTRlNjgtOWY0Yy1kZWIxMDZkMDdlMjIiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vcWFpc2FyLm9ubGluZSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1jdXBpZC1tZWV0LWRldiIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiI0YzIwNmJmMC1jNzZiLTRlNjgtOWY0Yy1kZWIxMDZkMDdlMjIiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdDEifQ.A1UYmZypDr38NmZQ1g6dp3uiD08_QrA8GJ91-S5q_3fyv5v5_ZgICk0TB2G5FXylfxh43JGeiGZc987rlcoBqhZgCuKeOPaLJ7HhOHRn5z81QJz_hB0S-vEGQF9ris5GOnzupGXwqdJab6SOguz3XRhF9foiasPkvK0ReuaG2ak4TmDeOaP75EDyZNRluczKBrsw2VtacIXT_mm5elGJYmuqFvvGGR9Pg1L46moq6LkuPx1IrhY7Q2JSY_VFBJQoe553PI6BhsA4ElHLSleqbr3TClbEF0Zz8zHIG9kKzhFDh_9s0SgtwPUV-hqG0AT4vaiYWeQOJou8cMJuyplIyA
+Content-Type: application/json
+
+{
+  "participants": [
+    "655735d9-07f7-4117-a442-8acbebec3f81",
+    "22284940-fb65-40a9-9338-5368ee311c80"
+  ],
+  "chatType": "PRIVATE"
+}
+
+###
+

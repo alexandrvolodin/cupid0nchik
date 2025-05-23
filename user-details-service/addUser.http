@@ -1,0 +1,43 @@
+###
+
+# curl -X POST
+#  http://localhost:8728/api/user-details-service/v1/user/profile
+#  -H 'Content-Type: application/json'
+#  -H 'Authorization: Bearer <СЮДА_ВСТАВЬТЕ_ВАШ_СКОПИРОВАННЫЙ_ACCESS_TOKEN>'
+#  -d '{
+#        "userPreference": {
+#          "preferredGender": "FEMALE",
+#          "minAge": 20,
+#          "maxAge": 35
+#        },
+#        "userInfo": {
+#          "name": "Алексей",
+#          "age": 28,
+#          "city": "Москва",
+#          "gender": "MALE",
+#          "personalityType": "INFP",
+#          "bio": "Краткая биография Алексея для демонстрации."
+#        }
+#      }'
+POST http://localhost:8728/api/user-details-service/v1/user/profile
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzU1g3SFlNbk5PcXZzVkY4ejlPMlJxLThFZEFwM2dGNWFqV3R5RUtKX3JZIn0.eyJleHAiOjE3NDc4MjA0NzQsImlhdCI6MTc0NzgyMDE3NCwianRpIjoiOTNhOWRhZjMtYmU5OS00ZWY5LWFjNzUtOTNkNThmNDNiMmE0IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9jdXBpZC1tZWV0LWRldiIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJjNjcyMGE3Mi03NzQ4LTRlMDQtYjBlOC0wN2Q4OGE4NTYxMTkiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjdXBpZC1tZWV0LWRldiIsInNlc3Npb25fc3RhdGUiOiIzOThmZjRkMi1iMjJiLTRlOTEtOWE1Yy1lNTU1MmIwM2Y5ZjEiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vcWFpc2FyLm9ubGluZSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1jdXBpZC1tZWV0LWRldiIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiIzOThmZjRkMi1iMjJiLTRlOTEtOWE1Yy1lNTU1MmIwM2Y5ZjEiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdCJ9.YmodUPjA4vWNRwvLZ17Aw8e5XPPxg553w9rENtcGV_OTpq4yunjV4OAGNAOJWSc9H7-KtdZrrRt0vI_PQ8k8bHh2WFq0UUczVJ9lITyo56ve_tcs0tvdhPLAoU1IC7FgMLBcrDSvBCjxrWQ_3O4b1wVzT5SyixOhmr2WKzhH0NZrcH9nTZQObMnjx4-9dYawGnmqYG8w4Db129UhzYRTUOiij-rTKjlYs_wcd9caiAcxq7SfB4B2Pq0-o9LnX0D-drufJn-poPTtNbcyu8NnWIya8nYzM9Q4QwPajRgPRP__jrgyjB9pvqeygXIS5l4vKMQjEiUWnVYahk2jVvr1bQ
+Content-Type: application/json
+
+{
+  "userPreference": {
+    "preferredGender": "FEMALE",
+    "minAge": 20,
+    "maxAge": 35
+  },
+  "userInfo": {
+    "name": "Алексей",
+    "age": 28,
+    "city": "Москва",
+    "gender": "MALE",
+    "personalityType": "INFP",
+    "bio": "Краткая биография Алексея для демонстрации."
+  }
+}
+
+###
+

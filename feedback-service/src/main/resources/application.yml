@@ -1,0 +1,43 @@
+server:
+  servlet:
+    context-path: /api/feedback-service
+  port: 8504
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: feedback-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:qaisar.online}:${DB_PORT:5433}/${DB_NAME:cupid-meet}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_URI:https://qaisar.online:8843/realms/cupid-meet-dev/protocol/openid-connect/certs}
+
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health, info, prometheus, loggers
+
+application:
+  cors:
+    allowed-origins: http://localhost:3000
+
+keycloak:
+  auth-server-url: https://qaisar.online:8843/realms/cupid-meet-dev/protocol/openid-connect/auth
+  realm: cupid-meet-dev
+  resource: cupid-meet-dev
+  bearer-only: true

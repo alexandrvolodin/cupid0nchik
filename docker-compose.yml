@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  # --- COMMON DATABASE SERVICES ---
+  user-details-db:
+    image: postgres:16.2
+    container_name: user-details-db
+    # Порт для доступа извне, если нужен для прямого подключения (опционально)
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: cupid-meet-user-details
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - user-details-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d cupid-meet-user-details" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: always
+
+  keycloak-db:
+    image: postgres:16.2
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d keycloak" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: always
+
+  chat-db:
+    image: postgres:16.2
+    container_name: chat-db
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: cupid-meet-chat # Название БД для чат-сервиса
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - chat-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d cupid-meet-chat" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: always
+
+  # --- APPLICATION SERVICES ---
+  user-details-service-app:
+    build:
+      context: ./user-details-service # Убедитесь, что это правильный путь к вашему user-details-service
+      dockerfile: Dockerfile # Имя Dockerfile в корне user-details-service
+    container_name: user-details-service-app
+    ports:
+      - "8728:8728" # Порт приложения на хосте:порт приложения в контейнере
+      - "8091:8090" # Порт Actuator на хосте:порт Actuator в контейнере
+    environment:
+      # Настройки базы данных
+      DB_HOST: user-details-db
+      DB_PORT: 5432
+      DB_NAME: cupid-meet-user-details
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      # Конфигурация Keycloak для user-details-service (нативная поддержка Spring Security)
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak-server:8080/realms/cupid-meet-dev/protocol/openid-connect/certs
+      # Разрешенные источники для CORS
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8728,http://localhost:8060,http://localhost:8080
+    depends_on:
+      user-details-db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started # Keycloak может быть просто запущен, без healthy, т.к. realm import.
+    restart: always
+
+  chat-service-app:
+    build:
+      context: ./chat-service # Убедитесь, что это правильный путь к вашему chat-service
+      dockerfile: Dockerfile # Имя Dockerfile в корне chat-service
+    container_name: chat-service-app
+    ports:
+      - "8060:8060" # Порт приложения на хосте:порт приложения в контейнере (соответствует server.port)
+      - "8092:8090" # Порт Actuator на хосте:порт Actuator в контейнере (соответствует management.server.port)
+    environment:
+      # Настройки базы данных для chat-service
+      DB_HOST: chat-db
+      DB_PORT: 5432
+      DB_NAME: cupid-meet-chat # Название БД, соответствующее chat-db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      # Конфигурация Keycloak для chat-service (нативная поддержка Spring Security)
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak-server:8080/realms/cupid-meet-dev/protocol/openid-connect/certs
+      # URL для FeignClient user-details-service
+      APPLICATION_USER_DETAILS_SERVICE_URL: http://user-details-service-app:8728/api/user-details-service # Используем имя сервиса и его context-path
+      # Разрешенные источники для CORS
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8728,http://localhost:8060,http://localhost:8080
+    depends_on:
+      chat-db:
+        condition: service_healthy
+      user-details-service-app: # Зависимость от user-details-service-app для FeignClient
+        condition: service_started
+      keycloak:
+        condition: service_started
+    restart: always
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.5
+    container_name: keycloak-server
+    ports:
+      - "8080:8080" # Порт Keycloak на хосте:порт Keycloak в контейнере
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_HTTP_PORT: 8080
+      KC_HOSTNAME: localhost # Для внешней доступности через localhost
+      KC_DB_URL_PROPERTIES: "reconnect=true&reconnectInterval=10"
+    volumes:
+      # Убедитесь, что путь к realm-export.json правильный относительно docker-compose.yml
+      - ./config/keycloak/realms/realm-export.json:/opt/keycloak/data/import/realm-import.json
+      - keycloak-data:/opt/keycloak/data
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/realms/master || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: always
+    command: start-dev --import-realm
+
+volumes:
+  user-details-db-data:
+  keycloak-db-data:
+  chat-db-data:
+  keycloak-data:

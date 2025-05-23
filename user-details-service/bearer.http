@@ -1,0 +1,14 @@
+# curl -X POST
+#  http://localhost:8080/realms/cupid-meet-dev/protocol/openid-connect/token
+#  -H 'Content-Type: application/x-www-form-urlencoded'
+#  -d 'client_id=cupid-meet-dev&grant_type=password&username=<ВАШ_НОВЫЙ_ЛОГИН_ПОЛЬЗОВАТЕЛЯ>&password=<ВАШ_НОВЫЙ_ПАРОЛЬ_ПОЛЬЗОВАТЕЛЯ>'
+POST http://localhost:8080/realms/cupid-meet-dev/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = cupid-meet-dev &
+grant_type = password &
+username = test &
+password = test
+
+###
+
